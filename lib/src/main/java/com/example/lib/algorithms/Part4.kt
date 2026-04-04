@@ -1,6 +1,6 @@
 package com.example.lib.algorithms
 
-import com.example.lib.algorithms.TreeNode
+import java.rmi.dgc.VMID.isUnique
 import java.util.LinkedList
 import kotlin.math.abs
 import kotlin.math.max
@@ -784,20 +784,40 @@ private fun <T : Comparable<T>> getRandom(tree: ITree<T>): ITree.INode<T>? {
 }
 
 // Task 12
-private fun <T : Comparable<T>> pathsWithSum(tree: ITree<T>, targetSum: Int): Int {
-    val result = mutableListOf<MutableList<ITree.INode<T>>>()
+private fun pathsWithSum(tree: ITree<Int>, targetSum: Int): Int {
+    val paths = mutableListOf<MutableList<ITree.INode<Int>>>()
 
     pathsWithSumInternal(
         tree.root,
         mutableListOf(),
-        result
+        paths
     )
-    for (nodes in result) {
+    val result = mutableListOf<List<ITree.INode<Int>>>()
+    for (nodes in paths) {
         println(nodes.joinToString { "${it.value}" })
+        val r = slidingWindowWithNegativeNums(nodes, targetSum)
+        r.forEach {
+            var isUnique = true
+
+            root@ for (l in result) {
+                if (it.size != l.size) continue
+
+                for (i in it.indices) {
+                    if (it[i] !== l[i]) continue@root
+                }
+                isUnique = false
+            }
+
+            if (isUnique) result.add(it)
+        }
     }
 
-//    slidingWindowWithNegativeNums()
-    return -1
+    println("----")
+    result.forEach {
+        println(it.joinToString { "${it.value}" })
+    }
+
+    return result.size
 }
 
 private fun <T : Comparable<T>> pathsWithSumInternal(
@@ -827,15 +847,19 @@ private fun <T : Comparable<T>> pathsWithSumInternal(
  * @param targetSum a desired sum of elements
  * @return list of sub-arrays, where a sum of elements results in [targetSum]
  * */
-private fun slidingWindowWithNegativeNums(arr: List<Int>, targetSum: Int): List<List<Int>> {
-    val result = mutableListOf<List<Int>>()
+private fun slidingWindowWithNegativeNums(
+    arr: List<ITree.INode<Int>>,
+    targetSum: Int
+): List<List<ITree.INode<Int>>> {
+    val result = mutableListOf<List<ITree.INode<Int>>>()
     if (arr.isEmpty()) return result
 
     val previous = mutableMapOf<Int, Int>()
+    previous[0] = -1
     var sum = 0
 
     for (i in arr.indices) {
-        sum += arr[i]
+        sum += arr[i].value
         if (previous.contains(sum - targetSum)) {
             val start = previous.getValue(sum - targetSum) + 1
             result.add(arr.copyOfRange(start, i + 1))
@@ -1009,11 +1033,13 @@ fun main() {
 //    tree.remove(20)
 //    println(getRandom(tree)?.value)
 
-//    val input = arrayOf(10, 8, -3, -5, 2, -2, 4, 3, 1, -1)
-//    val result = slidingWindowWithNegativeNums(input, 0)
+//    val input = listOf(10, 5, 1, 2)
+//    val result = slidingWindowWithNegativeNums(input, 15)
 //    result.forEach {
-//        println(it.contentToString())
+//        println(it.joinToString { "$it" })
 //    }
+
+    println(pathsWithSum(tree, 10))
 
 }
 
