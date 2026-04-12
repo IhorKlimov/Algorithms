@@ -16,7 +16,7 @@ private fun insertion(n: Int, m: Int, i: Int, j: Int): Int {
     return cleared or target
 }
 
-// Task 2
+// Task 2 IEEE-754
 /*  Float:
     1 bit for sign
     23 bits for significant
