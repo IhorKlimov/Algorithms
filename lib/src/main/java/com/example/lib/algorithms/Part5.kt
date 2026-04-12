@@ -121,8 +121,35 @@ private fun binaryToStringFloat2(value: Double): String {
     return result.toString()
 }
 
+// Task 3
+private fun task3(number: Int): Int {
+    var maxLength = 0
+    var currLength = 0
+    var prevLength = 0
+    var hasPrecedingZero = false
+
+    var remainder = number
+    for (p in 30 downTo 0) {
+        val pow = 2.0.pow(p).toInt()
+
+        if (remainder >= pow) {
+            remainder -= pow
+            currLength++
+            val extra = if (hasPrecedingZero) 1 else 0
+            maxLength = maxLength.coerceAtLeast(currLength + prevLength + extra)
+        } else {
+            hasPrecedingZero = true
+            prevLength = currLength
+            currLength = 0
+            maxLength = maxLength.coerceAtLeast(prevLength + 1)
+        }
+    }
+
+    return maxLength
+}
+
 fun main() {
-    println("demoInt() = ${binaryToStringFloat2(0.75)}")
+    println(task3(1775))
 }
 
 private fun printBinary(i: Int) {
