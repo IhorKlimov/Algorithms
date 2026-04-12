@@ -107,16 +107,12 @@ private fun binaryToStringFloat2(value: Double): String {
 
     var remainder = value
     for (p in 1..numOfBits - 2) {
-        if (remainder == 0.0) {
-            result.append("0")
-            continue
-        }
-
         val pow = 2.0.pow(-p)
-        val rem = (remainder / pow).toInt()
-        if (rem != 0) {
+        if (remainder >= pow) {
             result.append("1")
             remainder -= pow
+        } else {
+            result.append("0")
         }
     }
 
@@ -126,7 +122,7 @@ private fun binaryToStringFloat2(value: Double): String {
 }
 
 fun main() {
-    println("demoInt() = ${binaryToStringFloat2(0.72)}")
+    println("demoInt() = ${binaryToStringFloat2(0.75)}")
 }
 
 private fun printBinary(i: Int) {
