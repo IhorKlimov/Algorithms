@@ -122,7 +122,7 @@ private fun binaryToStringFloat2(value: Double): String {
 }
 
 // Task 3
-private fun task3(number: Int): Int {
+private fun flipBit(number: Int): Int {
     var maxLength = 0
     var currLength = 0
     var prevLength = 0
@@ -148,8 +148,40 @@ private fun task3(number: Int): Int {
     return maxLength
 }
 
+// Task 4
+private fun nextNumber(from: Int): Pair<Int, Int> {
+    var smallestNumber = 0
+    var largestNumber = 0
+
+    val leftBit1 = Int.MIN_VALUE ushr 1
+
+    var n = from
+    while (n != 0) {
+        val isOne = n and 1 != 0
+
+        if (isOne) {
+            if (smallestNumber == 0) {
+                smallestNumber = 1
+                largestNumber = leftBit1
+            } else {
+                smallestNumber = smallestNumber shl 1
+                smallestNumber = smallestNumber or 1
+
+                largestNumber = largestNumber ushr 1
+                largestNumber = largestNumber or leftBit1
+            }
+        }
+
+        n = n ushr 1
+    }
+
+    return Pair(smallestNumber, largestNumber)
+}
+
+
+
 fun main() {
-    println(task3(1775))
+    println(nextNumber(123))
 }
 
 private fun printBinary(i: Int) {
