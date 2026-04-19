@@ -52,8 +52,8 @@ private fun countNumOfOnes(number: Int): Int {
     var n = number
 
     while (n != 0) {
-        if (n and 1 != 0) result++
-        n = n ushr 1
+        n = n and (n - 1)
+        result++
     }
 
     return result
