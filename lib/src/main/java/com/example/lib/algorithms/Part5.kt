@@ -228,9 +228,9 @@ private fun setBit(bitIndex: Int, number: Int): Int {
 private fun conversion(from: Int, to: Int): Int {
     if (from == to) return 0
 
+    var c = from xor to
     var result = 0
 
-    var c = from xor to
     while (c != 0) {
         result += 1 and c
         c = c ushr 1
@@ -239,8 +239,22 @@ private fun conversion(from: Int, to: Int): Int {
     return result
 }
 
+private fun conversion2(from: Int, to: Int): Int {
+    if (from == to) return 0
+
+    var c = from xor to
+    var result = 0
+
+    while (c != 0) {
+        c = c and (c - 1)
+        result++
+    }
+
+    return result
+}
+
 fun main() {
-    println(conversion(29, 15))
+    println(conversion2(29, 15))
 //    printBinary(13948)
 //    printBinary(13967)
 }
