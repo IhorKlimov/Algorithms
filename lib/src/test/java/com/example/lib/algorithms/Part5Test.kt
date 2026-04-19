@@ -7,7 +7,7 @@ class Part5Test {
 
     @Test
     fun nextNumber_shouldWorkCorrectly() {
-        for (input in 0..100_000) {
+        for (input in 0..1_000_000) {
             val result = nextNumber(input)
             val correctNext = findCorrectNextNumber(input)
             val correctPrev = findCorrectPrevNumber(input)
