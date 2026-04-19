@@ -49,10 +49,10 @@ class Part5Test {
 private fun countNumOfOnes(number: Int): Int {
     var result = 0
 
-    var n = number
+    var remainder = number
 
-    while (n != 0) {
-        n = n and (n - 1)
+    while (remainder != 0) {
+        remainder = remainder and (remainder - 1)
         result++
     }
 
