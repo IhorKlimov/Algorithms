@@ -1,5 +1,6 @@
 package com.example.lib.algorithms
 
+import javax.management.Query.and
 import kotlin.math.absoluteValue
 import kotlin.math.floor
 import kotlin.math.ln
@@ -149,39 +150,112 @@ private fun flipBit(number: Int): Int {
 }
 
 // Task 4
-private fun nextNumber(from: Int): Pair<Int, Int> {
-    var smallestNumber = 0
-    var largestNumber = 0
+fun nextNumber(number: Int): Pair<Int, Int> {
+    if (number == 0) return Pair(0, 0)
 
-    val leftBit1 = Int.MIN_VALUE ushr 1
+    return Pair(getPrev(number), getNext(number))
+}
 
-    var n = from
-    while (n != 0) {
-        val isOne = n and 1 != 0
+private fun getNext(number: Int): Int {
+    for (bitIndex in 0..29) {
+        if (!isZero(bitIndex, number) && isZero(bitIndex + 1, number)) {
+            var result = setBit(bitIndex + 1, number)
+            var copy = number
+            var mask = -1 shl bitIndex + 1
+            result = result and mask
+            mask = mask.inv()
+            mask = clearBit(bitIndex, mask)
+            copy = copy and mask
 
-        if (isOne) {
-            if (smallestNumber == 0) {
-                smallestNumber = 1
-                largestNumber = leftBit1
-            } else {
-                smallestNumber = smallestNumber shl 1
-                smallestNumber = smallestNumber or 1
-
-                largestNumber = largestNumber ushr 1
-                largestNumber = largestNumber or leftBit1
+            var new = 0
+            while (copy != 0) {
+                new = new shl 1 or 1
+                while (isZero(0, copy)) {
+                    copy = copy shr 1
+                }
+                copy = copy shr 1
             }
+            return result or new
         }
+    }
+    return number
+}
 
+private fun getPrev(number: Int): Int {
+    for (bitIndex in 1..30) {
+        if (!isZero(bitIndex, number) && isZero(bitIndex - 1, number)) {
+            var result = setBit(bitIndex - 1, number)
+            result = clearBit(bitIndex, result)
+
+            if (bitIndex - 2 < 0) return result
+
+            var mask = -1 shl bitIndex - 1
+            result = result and mask
+            mask = mask.inv()
+            var remainder = number and mask
+
+            var new = 0
+            while (remainder != 0) {
+                new = new ushr 1 or (1 shl bitIndex - 2)
+                while (isZero(0, remainder)) {
+                    remainder = remainder ushr 1
+                }
+                remainder = remainder ushr 1
+            }
+
+            return result or new
+        }
+    }
+    return number
+}
+
+private fun isZero(bitIndex: Int, number: Int): Boolean {
+    val mask = 1 shl bitIndex
+    return number and mask == 0
+}
+
+private fun clearBit(bitIndex: Int, number: Int): Int {
+    val mask = (1 shl bitIndex).inv()
+    return number and mask
+}
+
+private fun setBit(bitIndex: Int, number: Int): Int {
+    val mask = 1 shl bitIndex
+    return number or mask
+}
+
+// Task 6
+private fun conversion(from: Int, to: Int): Int {
+    if (from == to) return 0
+
+    var result = 0
+
+    var c = from xor to
+    while (c != 0) {
+        result += 1 and c
+        c = c ushr 1
+    }
+
+    return result
+}
+
+fun main() {
+    println(conversion(29, 15))
+//    printBinary(13948)
+//    printBinary(13967)
+}
+
+private fun countNumOfOnes(number: Int): Int {
+    var result = 0
+
+    var n = number
+
+    while (n != 0) {
+        if (n and 1 != 0) result++
         n = n ushr 1
     }
 
-    return Pair(smallestNumber, largestNumber)
-}
-
-
-
-fun main() {
-    println(nextNumber(123))
+    return result
 }
 
 private fun printBinary(i: Int) {
