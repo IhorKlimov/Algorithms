@@ -1,10 +1,10 @@
 package com.example.lib.algorithms
 
-import javax.management.Query.and
 import kotlin.math.absoluteValue
 import kotlin.math.floor
 import kotlin.math.ln
 import kotlin.math.pow
+import kotlin.random.Random
 
 // Task 1
 private fun insertion(n: Int, m: Int, i: Int, j: Int): Int {
@@ -253,15 +253,62 @@ private fun conversion2(from: Int, to: Int): Int {
     return result
 }
 
+// Task 7
+private fun pairwiseSwap(number: Int): Int {
+    var result = number
+
+    for (bitIndex in 0..31 step 2) {
+        val isRightZero = isZero(bitIndex, number)
+        val isLeftZero = isZero(bitIndex + 1, number)
+        result = if (isRightZero) clearBit(bitIndex + 1, result) else setBit(bitIndex + 1, result)
+        result = if (isLeftZero) clearBit(bitIndex, result) else setBit(bitIndex, result)
+    }
+
+    return result
+}
+
+private fun pairwiseSwap2(number: Int): Int {
+    var result = 0
+
+    val first = number ushr 1
+    val second = number shl 1
+    var bit = 1
+
+    var current = first
+
+    while (bit > 0) {
+        result = result or (bit and current)
+        current = if (current == first) second else first
+        bit *= 2
+    }
+
+    return result
+}
+
+// Task 8
+private fun drawLine(screen: ByteArray, width: Int, x1: Int, x2: Int, y: Int) {
+    val offset = width * y
+
+    for (bitIndex in x1..x2) {
+        val position = offset + bitIndex
+        var byte = screen[position / 8].toInt()
+        val indexInByte = position % 8
+        val b = 8 - indexInByte - 1
+        byte = (1 shl b) or byte
+        screen[position / 8] = byte.toByte()
+    }
+}
+
 fun main() {
-    println(conversion2(29, 15))
-//    printBinary(13948)
-//    printBinary(13967)
+    val input = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
+    drawLine(input, 16, 2, 10, 1)
+    input.toList().chunked(2).reversed().forEach {
+        println("${getBinary(it.first())} ${getBinary(it[1])}")
+    }
 }
 
 private fun countNumOfOnes(number: Int): Int {
     var result = 0
-
     var n = number
 
     while (n != 0) {
@@ -274,6 +321,18 @@ private fun countNumOfOnes(number: Int): Int {
 
 private fun printBinary(i: Int) {
     println(Integer.toBinaryString(i).padStart(32, '0').chunked(4).joinToString(separator = " "))
+}
+
+private fun getBinary(i: Byte): String {
+    val result = StringBuilder()
+    val input = i.toInt()
+
+    for (shift in 7 downTo 0) {
+        val b = input shr shift and 1
+        result.append(b)
+    }
+
+    return result.toString()
 }
 
 private fun printBinary(i: Float) {

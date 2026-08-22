@@ -1,8 +1,8 @@
 package com.example.lib.algorithms
 
-import com.example.lib.i
 import kotlin.math.max
 
+var i = 0
 
 internal fun knapsackRec(
     values: IntArray,
